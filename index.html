@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>برنامج إدارة الاحتياط </title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="logo">✔</span>
+      <div class="brand-text">
+        <h1>إدارة حصص الاحتياط لمدرسة أبوأيوب الأنصاري</h1>
+        <p class="subtitle">إعداد أ.زكريا المرزوقي</p>
+      </div>
+    </div>
+    <nav class="tabs">
+      <button class="tab active" data-tab="teachers">المعلمون والجداول</button>
+      <button class="tab" data-tab="classes">الفصول</button>
+      <button class="tab" data-tab="absences">الغيابات والاحتياط</button>
+      <button class="tab" data-tab="reports">التقارير</button>
+      <button class="tab" data-tab="settings">الإعدادات</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section id="teachers" class="card">
+      <h2 class="card-title">المعلمون والجداول</h2>
+      <div class="layout-2">
+        <aside class="side">
+          <div class="panel sticky">
+            <h3 class="panel-title">بيانات المعلم</h3>
+            <div class="form-row"><label for="teacherName">اسم المعلم</label><input id="teacherName" type="text" placeholder="مثال: أحمد علي"></div>
+            <div class="form-row"><label for="teacherNote">ملاحظات/المادة</label><input id="teacherNote" type="text" placeholder="مثال: رياضيات"></div>
+            <div class="actions"><button id="addTeacher" class="btn primary">إضافة</button></div>
+            <hr class="divider">
+            <div class="form-row"><label for="teacherSelect">اختر المعلم</label><select id="teacherSelect"></select></div>
+            <div class="form-row"><label>أيام الأسبوع</label><div id="daysTags" class="chips"></div></div>
+            <div class="actions compact"><button id="saveSchedule" class="btn success">حفظ الجدول</button><button id="clearSchedule" class="btn warn">تفريغ اليوم الحالي</button></div>
+          </div>
+        </aside>
+        <section class="content">
+          <div class="panel">
+            <h3 class="panel-title">جدول الحصص لليوم المختار</h3>
+            <div class="schedule"><div id="scheduleGrid" class="grid periods"></div></div>
+            <p class="helper">اكتب اسم الفصل/المجموعة في خلية الحصة؛ واتركه فارغًا إذا كانت الحصة فراغ.</p>
+          </div>
+          <div class="panel">
+            <h3 class="panel-title">قائمة المعلمين</h3>
+            <div class="table-scroll"><table id="teachersTable" class="table-clean"><thead><tr><th>الاسم</th><th>مواد/ملاحظات</th><th>إجراءات</th></tr></thead><tbody></tbody></table></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="classes" class="card hidden">
+      <h2 class="card-title">الفصول</h2>
+      <div class="layout-2">
+        <aside class="side">
+          <div class="panel sticky">
+            <h3 class="panel-title">إضافة فصل</h3>
+            <div class="form-row"><label for="className">اسم الفصل</label><input id="className" type="text" placeholder="مثال: 8/أ"></div>
+            <div class="form-row"><label for="classGrade">المرحلة/الصف</label><input id="classGrade" type="text" placeholder="مثال: المتوسطة"></div>
+            <div class="actions"><button id="addClass" class="btn primary">إضافة</button></div>
+          </div>
+        </aside>
+        <section class="content">
+          <div class="panel">
+            <h3 class="panel-title">قائمة الفصول</h3>
+            <div class="table-scroll"><table class="table-clean"><thead><tr><th>الاسم</th><th>المرحلة</th><th>إجراءات</th></tr></thead><tbody id="classesTable"></tbody></table></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="absences" class="card hidden">
+      <h2 class="card-title">الغيابات والاحتياط</h2>
+      <div class="layout-2 reverse">
+        <aside class="side">
+          <div class="panel sticky">
+            <h3 class="panel-title">اقتراحات/تعيينات الاحتياط العادلة</h3>
+            <div id="substitutesList" class="suggestions"></div>
+            <div class="actions compact"><button id="autoAssignFair" class="btn primary">توزيع عادل تلقائي</button><button id="saveAssignments" class="btn success">حفظ</button><button id="clearAssignments" class="btn warn">مسح الكل</button></div>
+            <hr class="divider">
+            <h3 class="panel-title">تعيينات الاحتياط لليوم</h3>
+            <div class="table-scroll"><table class="table-clean"><tbody id="assignmentsBody"></tbody></table></div>
+          </div>
+        </aside>
+        <section class="content">
+          <div class="panel">
+            <h3 class="panel-title">تسجيل غياب</h3>
+            <div class="grid-3">
+              <div class="form-row"><label for="absenceDate">اليوم/التاريخ</label><input id="absenceDate" type="date"></div>
+              <div class="form-row"><label>اليوم</label><div id="dayName" class="chip info"></div></div>
+            </div>
+            <div class="form-row"><label>المعلمون الغائبون (اختر أكثر من واحد)</label><div id="absentTeachersList" class="list-vertical"></div></div>
+            <h3 class="panel-title">جدول اليوم</h3>
+            <div class="table-scroll"><table class="table-clean"><thead><tr id="periodHeader"></tr></thead><tbody id="absentOverviewBody"></tbody></table></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="reports" class="card hidden">
+      <h2 class="card-title">التقارير</h2>
+      <div class="panel">
+        <div class="grid-3">
+          <div class="form-row"><label for="reportDate">اختر تاريخ</label><input id="reportDate" type="date"></div>
+          <div class="actions"><button id="printReport" class="btn secondary">طباعة/حفظ PDF</button><button id="exportCSV" class="btn primary">تصدير CSV</button></div>
+        </div>
+        <div id="printHeader" class="print-header"></div>
+      <div id="reportGroups"></div>
+      </div>
+    </section>
+
+    <section id="settings" class="card hidden">
+      <h2 class="card-title">الإعدادات</h2>
+      <div class="layout-2">
+        <aside class="side">
+          <div class="panel sticky">
+            <h3 class="panel-title">إعدادات عامة</h3>
+            <div class="form-row"><label for="settingPeriods">عدد الحصص اليومي</label><input id="settingPeriods" type="number" min="1" max="15"></div>
+            <div class="form-row"><label for="settingPeriodNames">أسماء الحصص (افصل بينها بفاصلة)</label><input id="settingPeriodNames" type="text" placeholder="الأولى,الثانية,الثالثة,..."></div>
+            <div class="form-row"><label for="settingDays">أيام العمل (افصل بينها بفاصلة)</label><input id="settingDays" type="text" placeholder="الأحد,الإثنين,الثلاثاء,..."></div>
+            <div class="form-row"><label for="settingMaxSubs">الحد الأقصى للاحتياط لكل معلّم يوميًا</label><input id="settingMaxSubs" type="number" min="1" max="5"></div>
+            <div class="actions">
+              <button id="saveSettingsBtn" class="btn success">حفظ الإعدادات</button>
+            </div>
+          </div>
+        </aside>
+        <section class="content">
+          <div class="panel">
+            <h3 class="panel-title">معلومات إضافية</h3>
+            <p class="muted">تعديل عدد الحصص أو أسماء الأيام/الحصص سيتطلب إعادة بناء الجداول الحالية للمعلّمين. تأكد من أن عدد أسماء الحصص المدخلة يطابق العدد اليومي للحصص.</p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <footer class="app-footer"><small>© 2025 — واجهة v3.3 منظمة</small></footer>
+  <script src="app.js"></script>
+
+<div style="position:fixed;top:20px;left:20px;z-index:9999;">
+  <button id="themeToggleBtn" class="btn secondary">تبديل الوضع</button>
+</div>
+
+</body>
+</html>
